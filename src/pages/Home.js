@@ -120,7 +120,7 @@ const oneuser = (user) =>{
   $("#profile").addClass("picked")
 }
  
-       
+        
 
 return (
   <>

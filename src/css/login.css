@@ -181,7 +181,23 @@ a:hover{
 	background-position: right;
 }
 
-
+.btn-cancel{
+	display: block;
+	width: 100%;
+	height: 50px;
+	border-radius: 25px;
+	outline: none;
+	border: none;
+	background-image: linear-gradient(to right, #7d8683, #7d8683, #7d8683);
+	background-size: 200%;
+	font-size: 15px;
+	color: #fff;
+	font-family: 'Poppins', sans-serif;
+	text-transform: uppercase;
+	margin: 1rem 0;
+	cursor: pointer;
+	transition: .5s;
+}
 .btn{
 	display: block;
 	width: 100%;

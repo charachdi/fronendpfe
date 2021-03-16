@@ -7,6 +7,8 @@ import './function'
 import Home from './pages/Home'
 import Equipe from './pages/Equipe'
 import Service from './pages/Service'
+import Clients from './pages/Clients'
+import CompteCli from './pages/CompteCli'
 import Stepperview from './pages/Stepperview'
 import Login from './pages/Login'
 import Test from './pages/Test'
@@ -30,6 +32,8 @@ function App() {
           <Route path='/stepper' component={Stepperview} exact/>
           <Route path='/Equipe' component={Equipe} exact/>
           <Route path='/Service' component={Service} exact/>
+          <Route path='/CompteCli' component={CompteCli} exact/>
+          <Route path='/Clients' component={Clients} exact/>
           <Route path='/test' component={Test} exact/>
         </Switch>
       </div>

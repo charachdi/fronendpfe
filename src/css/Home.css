@@ -22,16 +22,9 @@ body{
 }
 
 
-::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgb(45, 205, 148);
-	border-radius: 10px;
-	background-color: #F5F5F5;
-}
-
 ::-webkit-scrollbar
 {
-	width: 12px;
+	width: 5px;
 	background-color: #2DCD94;
 }
 
@@ -67,3 +60,55 @@ body{
 	top: 45%;
 	left: 48%;
 }
+
+.friend-list,
+.img-grid-list {
+    margin: -1px;
+    list-style-type: none;
+}
+
+.coming-soon-cover img,
+.email-detail-attachment .email-attachment .document-file img,
+.email-sender-img img,
+.friend-list .friend-img img,
+.profile-header-img img {
+    max-width: 100%;
+}
+
+
+
+
+
+
+
+.profile-header-img {
+    float: left;
+    
+    overflow: hidden;
+    z-index: 10;
+    margin: 0 1.25rem -1.25rem 0;
+    padding: 0.1875rem;
+    
+}
+
+
+
+    .profile-header-info {
+        margin-left: 4.6875rem;
+        padding-bottom: 0.9375rem;
+    }
+    .profile-header-info h4 {
+        margin: 0 0 0.3125rem;
+    }
+    .profile-header .profile-header-tab {
+        white-space: nowrap;
+        overflow: scroll;
+        padding: 0;
+    }
+
+
+
+	#content {
+		overflow-y: scroll;
+		height: 100vh;
+	  }

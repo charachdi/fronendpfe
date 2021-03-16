@@ -1,5 +1,6 @@
 import React , {useState , useEffect} from 'react'
 import Table from 'react-bootstrap/Table'
+import './../css/Home.css'
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -16,16 +17,17 @@ import axios from 'axios'
 import $ from 'jquery'
 import Api_url from './../component/Api_url';
 import { ToastContainer, toast } from 'react-toastify';
+import Avatar from '@material-ui/core/Avatar';
 // import { mdbTableEditor } from 'mdb-table-editor'
 
 
-function Service() {
+function CompteCli() {
     const token = localStorage.getItem('token')
     const [open, setopen] = useState(false)
     const [suppopen, setsuppopen] = useState(false)
     const [editopen, seteditopen] = useState(false)
 
-    const [selectedrow, setselectedrow] = useState({id: 26, Nom_service: "hhhh", createdAt: "2021-03-09T15:20:45.000Z", updatedAt: "2021-03-09T15:20:45.000Z"})
+    const [selectedrow, setselectedrow] = useState({id: 26, Nom_equipe: "hhhh", Service: "Telephonie", createdAt: "2021-03-09T15:20:45.000Z", updatedAt: "2021-03-09T15:20:45.000Z"})
   
     const toggle = () =>{
         setopen(!open)
@@ -36,8 +38,8 @@ function Service() {
     }
 
 
-    const changeselected = (service) =>{
-      setselectedrow(service)
+    const changeselected = (equipe) =>{
+      setselectedrow(equipe)
       console.log(selectedrow)
     }
 
@@ -50,41 +52,42 @@ function Service() {
 
     useEffect(() => {
    // fonction affiche table
-    const getservicelist = async ()=>{
+    const getequipelist = async ()=>{
       const res = await axios({
         headers: {'Authorization': `Bearer ${token}`},
         method: 'get',
-        url : `${Api_url}service/`,  
+        url : `${Api_url}equipe/`,  
         });
-        setservices(res.data)
+        setequipes(res.data)
         
     }
 
-    getservicelist()
+    getequipelist()
     }, [])
   
-    const [nomservice, setnomservice] = useState("")
-    const [services, setservices] = useState([]);
+    const [nomequipe, setnomequipe] = useState("")
+    const [service, setservice] = useState("")
+    const [equipes, setequipes] = useState([]);
 
     const [search, setsearch] = useState("")
 
 // fonction add row table
-    const Addservice = async (e) =>{
+    const Addequipe = async (e) =>{
       e.preventDefault()
       const data = {
-        nomService :nomservice,
-       
+        nomService :nomequipe,
+        nomEquipe:service,
       }
       const res = await axios({
         headers: {'Authorization': `Bearer ${token}`},
         method: 'post',
-        url : `${Api_url}service/`,
+        url : `${Api_url}equipe/`,
         data
         
         });
         console.log(res)
         if(res.status === 200){
-          toast.success(`Le service ${res.data.service.Nom_service} a été ajoutée avec succès`, {
+          toast.success(`L'équipe ${res.data.equipe.Nom_equipe} a été ajoutée avec succès`, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
@@ -93,10 +96,11 @@ function Service() {
             draggable: true,
             });
               setTimeout(() => {
-                setservices([res.data.service ,...services])
+                setequipes([res.data.equipe ,...equipes])
               }, 500);
 
-              setnomservice("")
+              setnomequipe("")
+              setservice("")
 
 
             
@@ -118,22 +122,22 @@ function Service() {
     }
   
   // fonction update table
-    const updatedservice = async (e)=>{
+    const updatedequipe = async (e)=>{
       e.preventDefault()
       const data = {
-         nomService : selectedrow.Nom_service,
-       
+         nomService : selectedrow.Service,
+        nomEquipe : selectedrow.Nom_equipe
       }
       const res = await axios({
         headers: {'Authorization': `Bearer ${token}`},
         method: 'put',
-        url : `${Api_url}service/update/service/${selectedrow.id}`,
+        url : `${Api_url}equipe/update/equipe/${selectedrow.id}`,
         data
         
     });
    
         if(res.status === 200){
-          toast.success(`Le service ${res.data.service.Nom_service} a été modifée avec succès`, {
+          toast.success(`L'équipe ${res.data.equipe.Nom_equipe} a été modifée avec succès`, {
             position: "top-right",
             autoClose: 3000,
             hideProgressBar: false,
@@ -142,7 +146,8 @@ function Service() {
             draggable: true,
             });
               setTimeout(() => {
-                $(`#${res.data.service.id} #Nomser`).text(res.data.service.Nom_service)  
+                $(`#${res.data.equipe.id} #Nomeq`).text(res.data.equipe.Nom_equipe)
+                $(`#${res.data.equipe.id} #Ser`).text(res.data.equipe.Service)
               }, 200);   
               seteditopen(!editopen)
         }
@@ -159,18 +164,18 @@ function Service() {
     }
 
 // fonction delete row table
-const Suppservice = async (e)=>{
+const Suppequipe = async (e)=>{
   e.preventDefault()
   const res = await axios({
     headers: {'Authorization': `Bearer ${token}`},
     method: 'delete',
-    url : `${Api_url}service/${selectedrow.id}`
+    url : `${Api_url}equipe/${selectedrow.id}`
    
     
 });
 
     if(res.status === 200){
-      toast.success(`Le service ${res.data.service.Nom_service} a été supprimée avec succès`, {
+      toast.success(`L'équipe ${res.data.equipe.Nom_equipe} a été supprimée avec succès`, {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -179,9 +184,7 @@ const Suppservice = async (e)=>{
         draggable: true,
         });
           setTimeout(() => {
-            setservices(
-                services.filter(item =>item.id !== res.data.service.id)
-            )
+            $(`#${res.data.equipe.id}`).hide()
           }, 200);   
           setsuppopen(!suppopen)
     }
@@ -199,8 +202,8 @@ const Suppservice = async (e)=>{
 
 const filter = () =>{
  
-    var value = $("#service-search").val().toLocaleLowerCase()
-    $("#service-body tr").filter(function() {
+    var value = $("#equipe-search").val().toLocaleLowerCase()
+    $("#equipe-body tr").filter(function() {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
      console.log( $(this).text())
     });
@@ -211,6 +214,9 @@ const filter = () =>{
 
     return (
       <>
+      <div className="comptecli">
+          
+      
       <ToastContainer
       position="top-right"
       autoClose={3000}
@@ -223,32 +229,63 @@ const filter = () =>{
       pauseOnHover
       />
       
-
-      {/* <!-- Page Header--> */}
-          <header class="page-header">
+   
+ {/* <!-- Page Header--> */}
+ <header  class="page-header">
             <div class="container-fluid">
-              <h2 class="no-margin-bottom">Service</h2>
+              <h2 class="no-margin-bottom">Compte Client</h2>
             </div>
           </header>
           {/* <!-- Breadcrumb--> */}
           <div class="breadcrumb-holder container-fluid">
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="home">Home</a></li>
-              <li class="breadcrumb-item active">Service</li>
+              <li class="breadcrumb-item active">Clients</li>
+              <li class="breadcrumb-item active">Compte client</li>
             </ul>
           </div>
+      
 
 
         <div className="row  justify-content-center">
             <div className="col-10 text-center">
             
 
+{/* Profile client */}
+  
+
+
+
+    <div >
+            <div className="profile-header-cover"></div>
+            <div className="profile-header-content">
+                <div className="profile-header-img mb-4">
+                    <Avatar src="https://bootdey.com/img/Content/avatar/avatar1.png"className="mb-4 grow" style={{width:140,height:140}} alt=""/>
+                </div>
+
+                <div className="profile-header-info">
+                    <h4 className="m-t-sm">Clyde Stanley</h4>
+                    <p className="m-b-sm">UXUI + Frontend Developer</p>
+                    <Button href="#" color="primary"><EditIcon />Edit Profile</Button>
+                </div>
+            </div>
+
+        <ul className="profile-header-tab nav nav-tabs col-12 mb-4">
+            <li className="nav-item"><a href="#profile-post" className="nav-link" data-toggle="tab">POSTS</a></li>
+            <li className="nav-item"><a href="#profile-about" className="nav-link" data-toggle="tab">ABOUT</a></li>
+            <li className="nav-item"><a href="#profile-photos" className="nav-link" data-toggle="tab">STUFF</a></li>
+            <li className="nav-item"><a href="#profile-videos" className="nav-link" data-toggle="tab">CHARTS</a></li>
+            <li className="nav-item"><a href="#profile-friends" className="nav-link active show" data-toggle="tab">DATA</a></li>
+        </ul>
+    </div>
+
+
             <div className="row col-12 mb-2">
               <div className="col-9"> 
               <MDBCol >
                 <MDBFormInline className="md-form">
                   <MDBIcon icon="search" />
-                  <TextField className="ml-3 " size="small" label="Recherche" variant="outlined" id="service-search" type="text" onChange={()=>{filter()}}/>
+                  <TextField className="ml-3 " size="small" label="Recherche" variant="outlined" id="equipe-search" type="text" onChange={()=>{filter()}}/>
                 </MDBFormInline>
               </MDBCol>
                </div> 
@@ -261,23 +298,25 @@ const filter = () =>{
                     <thead>
                     <tr>
                         <th style={{width:50}}>#</th>
+                        <th>Equipe</th>
                         <th>Service</th>
                         <th style={{width:150}}>Action</th>
                       </tr>
                     </thead>
-                    <tbody id="service-body">
+                    <tbody id="equipe-body">
 
 
                       {
-                        services.map((service , index)=>(
-                            <tr key={index} id={service.id}>
-                        <td> {service.id}</td>
-                        <td id="Nomser" > {service.Nom_service}</td>
+                        equipes.map((equipe , index)=>(
+                            <tr key={index} id={equipe.id}>
+                        <td> {equipe.id}</td>
+                        <td id="Nomeq" > {equipe.Nom_equipe}</td>
+                        <td id="Ser"> {equipe.Service}</td>
                         <td>
-                        <IconButton className="mr-3" size="small" aria-label="delete" color="secondary" onClick={()=> {changeselected(service);toggleSupp()}}>
+                        <IconButton className="mr-3" size="small" aria-label="delete" color="secondary" onClick={()=> {changeselected(equipe);toggleSupp()}}>
                         <DeleteIcon />
                         </IconButton>
-                        <IconButton size="small" aria-label="delete" color="primary" onClick={()=>{changeselected(service); toggleEdit()}}>
+                        <IconButton size="small" aria-label="delete" color="primary" onClick={()=>{changeselected(equipe); toggleEdit()}}>
                         <EditIcon />
                         </IconButton>     
                         </td>
@@ -297,10 +336,28 @@ const filter = () =>{
                 <form className="row col-12 justify-content-center align-middle" >
               <div>
               <div className="mb-5">
-              <TextField value={nomservice} onChange={(e)=>{setnomservice(e.target.value)}} id="standard-basic" label="Nom du service" required />
+              <TextField value={nomequipe} onChange={(e)=>{setnomequipe(e.target.value)}} id="standard-basic" label="Nom de l'equipe" required />
+                      <TextField
+                        className="ml-5"
+                        id="standard-select-currency"
+                        select
+                        required
+                        size="medium"
+                        label="Service"
+                        value={service}
+                        onChange={(e)=>{setservice(e.target.value)}}
+                      >
+
+                        <MenuItem value={"Informatique"}>Informatique</MenuItem>
+                        <MenuItem value={"Marketing"}>Marketing</MenuItem>
+                        <MenuItem value={"Finance"}>Finance</MenuItem>
+                        <MenuItem value={"Telephonie"}>Telephonie</MenuItem>
+                        <MenuItem value={"RH"}>RH</MenuItem>
+                      </TextField>
+
                       
                       </div>
-                      <Button onClick={(e)=>{Addservice(e)}} variant="outlined" class="btn btn-outline-success">
+                      <Button onClick={(e)=>{Addequipe(e)}} variant="outlined" class="btn btn-outline-success">
                       Ajouter
                       </Button> 
                 </div>
@@ -309,15 +366,32 @@ const filter = () =>{
                 </MDBModal>
                         {/* MODAL EDIT */}
                 <MDBModal isOpen={editopen} toggle={()=>toggleEdit()} size="lg">
-                <MDBModalHeader toggle={()=>toggleEdit()} className="text-center">Modifier les données du service</MDBModalHeader>
+                <MDBModalHeader toggle={()=>toggleEdit()} className="text-center">Modifier les données de l'équipe</MDBModalHeader>
                 <MDBModalBody>
                 <form className="row col-12 justify-content-center align-middle" >
               <div>
               <div className="mb-5">
-              <TextField value={selectedrow.Nom_service} onChange={(e)=>{setselectedrow({...selectedrow , Nom_service : e.target.value})}} id="standard-basic" label="Nom du service" />
+              <TextField value={selectedrow.Nom_equipe} onChange={(e)=>{setselectedrow({...selectedrow , Nom_equipe : e.target.value})}} id="standard-basic" label="Nom de l'equipe" />
+                      <TextField
+                        className="ml-5"
+                        id="standard-select-currency"
+                        select
+                        size="medium"
+                        label="Service"
+                        value={selectedrow.Service}
+                        onChange={(e)=>{setselectedrow({...selectedrow , Service : e.target.value})}}
+                      >
+
+                        <MenuItem value={"Informatique"}>Informatique</MenuItem>
+                        <MenuItem value={"Marketing"}>Marketing</MenuItem>
+                        <MenuItem value={"Finance"}>Finance</MenuItem>
+                        <MenuItem value={"Telephonie"}>Telephonie</MenuItem>
+                        <MenuItem value={"RH"}>RH</MenuItem>
+                      </TextField>
+
                       
                       </div>
-                      <Button onClick={(e)=>{updatedservice(e)}} variant="outlined" class="btn btn-outline-success">
+                      <Button onClick={(e)=>{updatedequipe(e)}} variant="outlined" class="btn btn-outline-success">
                       Modifier
                       </Button> 
                 </div>
@@ -328,17 +402,17 @@ const filter = () =>{
 
                       {/* MODAL SUPP */}
                 <MDBModal isOpen={suppopen} toggle={()=>toggleSupp()} size="lg">
-                <MDBModalHeader toggle={()=>toggleSupp()} className="text-center sm">Supprimer le service</MDBModalHeader>
+                <MDBModalHeader toggle={()=>toggleSupp()} className="text-center sm">Supprimer l'équipe</MDBModalHeader>
                     <MDBModalBody>
                         <div className="row col-12 ">
                           <div >
-                            <p>vous les vous vraiment supprimer ce service ?</p>
+                            <p>vous les vous vraiment supprimer cette équipe ?</p>
                           </div>
                         </div>
                   </MDBModalBody> 
                   <div>
                 <MDBModalFooter>
-                        <Button color="primary" variant="contained" color="secondary" startIcon={<DeleteIcon />} onClick={(e)=>{Suppservice(e)}}>Supprimer</Button>
+                        <Button color="primary" variant="contained" color="secondary" startIcon={<DeleteIcon />} onClick={(e)=>{Suppequipe(e)}}>Supprimer</Button>
                         <Button color="primary" variant="contained" color="primary"  onClick={()=>toggleSupp()}>annuler</Button>
                 </MDBModalFooter>
                 </div>
@@ -352,9 +426,11 @@ const filter = () =>{
         bordered
        /> */}
 </div>
+            </div>
+            
             </div></>
       
     );
 }
 
-export default Service
+export default CompteCli
